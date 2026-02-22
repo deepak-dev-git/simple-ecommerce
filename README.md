@@ -30,48 +30,66 @@ A simple e-commerce built with Laravel.
 
 2. Navigate into the project:
 
-   cd simple-ecommerce
+    ```bash
+    cd simple-ecommerce
+    ```
 
 3. Install dependencies:
 
-   composer install
+    ```bash
+    composer install
+    ```
 
 4. Copy environment file:
 
-   cp .env.example .env
+    ```bash
+    cp .env.example .env
+    ```
 
 5. Generate application key:
 
-   php artisan key:generate
+    ```bash
+    php artisan key:generate
+    ```
 
 6. Configure database in `.env`
 
 7. Run storage link, migrations, and seeders:
 
-   ```bash
-   php artisan storage:link
-   php artisan migrate
-   php artisan db:seed
-   
+    ```bash
+    php artisan storage:link
+    php artisan migrate
+    php artisan db:seed
+    ```
+
+    The seeder includes:
+    - Admin & customer accounts
+    - Dummy products
+    - Sample orders
+
 8. Start the server:
 
-   php artisan serve
+    ```bash
+    php artisan serve
+    ```
 
 9. Login Credentials:
 
-   Admin:
-   Email: admin@gmail.com
-   Password: password
+    **Admin**
+    - Email: admin@gmail.com
+    - Password: password
 
-   Customer:
-   Email: user@gmail.com
-   Password: password
+    **Customer**
+    - Email: user@gmail.com
+    - Password: password
 
 10. Frontend assets are pre-built.  
-   If you encounter any asset-related issues, run:
+    If you encounter any asset-related issues, run:
 
-   npm install
-   npm run build
+    ```bash
+    npm install
+    npm run build
+    ```
 
 ---
 
