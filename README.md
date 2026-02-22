@@ -46,13 +46,13 @@ A simple e-commerce built with Laravel.
 
 6. Configure database in `.env`
 
-7. Run storage link, migrations, Seeders:
+7. Run storage link, migrations, and seeders:
 
+   ```bash
    php artisan storage:link
    php artisan migrate
    php artisan db:seed
-   (The seeder includes admin & customer accounts, dummy products, and sample orders.)
-
+   
 8. Start the server:
 
    php artisan serve
