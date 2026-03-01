@@ -7,7 +7,38 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bolder mb-0">My Orders</h3>
     </div>
+        <form method="GET" class="row g-2 mb-3">
+            {{-- Search --}}
+            <div class="col-md-4">
+                <input type="text" name="search" value="{{ request('search') }}" class="form-control"
+                    placeholder="Search Order No / Total">
+            </div>
 
+            {{-- Status Filter --}}
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+
+                    @foreach ($statuses as $status)
+                        <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                            {{ $status }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Buttons --}}
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-primary w-100">
+                    Search
+                </button>
+
+                <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary">
+                    Reset
+                </a>
+            </div>
+
+        </form>
     <div class="corner-3 bg-white shadow-sm p-3">
 
         <div class="table-responsive">

@@ -25,6 +25,7 @@ class ProductService
             'discount' => $data['discount'] ?? 0,
             'discounted_price' => $discountedPrice,
             'description' => $data['description'] ?? null,
+            'status' => $data['status'],
         ]);
     }
 
@@ -52,6 +53,7 @@ class ProductService
             'discounted_price' => $discountedPrice,
             'images' => $imagePaths,
             'description' => $data['description'] ?? null,
+            'status' => $data['status'],
         ]);
     }
 

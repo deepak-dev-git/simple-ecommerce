@@ -26,6 +26,7 @@ use App\Http\Controllers\DashboardController;
 Route::get('/', [ShopController::class, 'index'])->name('shop.index')->middleware('customer');
 Route::get('/product/{product}', [ShopController::class, 'show'])->name('shop.show')->middleware('customer');
 
+Route::get('/search/suggestions', [ShopController::class, 'suggestions'])->name('shop.suggestions');
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
@@ -63,6 +64,9 @@ Route::middleware(['auth', 'customer'])->group(function () {
     });
 
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+    // AJAX Create Razorpay order
+    Route::post('/checkout/razorpay', [OrderController::class, 'razorpay'])->name('checkout.razorpay');
+
     Route::get('/order-success', function () {
         return view('order-success');
     })->name('order.success');

@@ -18,11 +18,13 @@ class Product extends Model
         'discounted_price',
         'user_id',
         'images',
-        'description'
+        'description',
+        'status',
     ];
 
     protected $casts = [
         'images' => 'array',
+        'status' => 'boolean',
     ];
 
     public function user()
@@ -38,5 +40,21 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function scopeSearch($scope, $search)
+    {
+        $search = trim($search . '');
+        if (!$search) {
+            return;
+        }
+
+        $term = "%{$search}%";
+
+        $scope->where(function ($query) use ($term) {
+            $query->whereRaw("LOWER(name) LIKE LOWER(?)", [$term])
+                ->orWhereRaw("LOWER(price) LIKE LOWER(?)", [$term])
+                ->orWhereRaw("LOWER(description) LIKE LOWER(?)", [$term]);
+        });
     }
 }

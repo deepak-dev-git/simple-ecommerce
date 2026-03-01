@@ -20,6 +20,19 @@
                         <label class="fw-semibold text-muted">Email</label>
                         <p class="mb-0">{{ $order->user->email }}</p>
                     </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Payment Method</label>
+
+                        <p class="mb-0">
+                            {{ $order->payment_method ?? 'Cash on Delivery' }}
+
+                            @if ($order->payment_method === 'Razorpay')
+                                <span class="text-muted">
+                                    (Txn ID: {{ $order->razorpay_payment_id }})
+                                </span>
+                            @endif
+                        </p>
+                    </div>
                 </div>
 
                 <div class="col-md-6">
@@ -31,7 +44,7 @@
                     </div>
 
                     <div class="mb-2">
-                        <label class="fw-semibold text-muted">Status</label>
+                        <label class="fw-semibold text-muted">Order Status</label>
 
                         @php
                             $statusClass = match (strtolower($order->status)) {
@@ -48,6 +61,23 @@
                         <div>
                             <span class="badge {{ $statusClass }}">
                                 {{ ucfirst($order->status) }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Payment Status</label>
+
+                        @php
+                            $paymentStatusClass = match (strtolower($order->payment_status)) {
+                                'pending' => 'bg-warning text-dark',
+                                'paid' => 'bg-success',
+                                default => 'bg-secondary',
+                            };
+                        @endphp
+
+                        <div>
+                            <span class="badge {{ $paymentStatusClass }}">
+                                {{ ucfirst($order->payment_status) }}
                             </span>
                         </div>
                     </div>

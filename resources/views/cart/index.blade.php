@@ -7,127 +7,128 @@
         </div>
     @endif
     <div class="container">
-        <h2 class="mb-4">My Cart</h2>
+        <div class="container py-4">
 
-        @if ($cartItems->count())
-            @php $total = 0; @endphp
+            <h2 class="fw-bold mb-4">My Cart</h2>
 
-            <div class="table-responsive">
+            @if ($cartItems->count())
+                @php $total = 0; @endphp
 
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light d-none d-md-table-header-group">
-                        <tr>
-                            <th>Product</th>
-                            <th width="120">Price</th>
-                            <th width="170">Quantity</th>
-                            <th width="120">Subtotal</th>
-                            <th width="100">Action</th>
-                        </tr>
-                    </thead>
+                <div class="row g-4">
 
-                    <tbody id="cartTableBody">
+                    <!-- CART ITEMS -->
+                    <div class="col-lg-8">
 
                         @foreach ($cartItems as $item)
                             @php
                                 $price = $item->product->discounted_price ?? $item->product->price;
                                 $subtotal = $price * $item->quantity;
                                 $total += $subtotal;
+                                $img = $item->product->images[0] ?? null;
                             @endphp
 
-                            <!-- DESKTOP ROW -->
-                            <tr id="row-{{ $item->id }}" class="d-none d-md-table-row">
-                                <td>{{ $item->product->name }}</td>
+                            <div class="card border-0 shadow-sm mb-3" id="row-{{ $item->id }}">
+                                <div class="card-body">
 
-                                <td>₹{{ $price }}</td>
+                                    <div class="row align-items-center">
 
-                                <td>
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary decrease"
-                                            data-id="{{ $item->id }}">−</button>
-
-                                        <input type="number" class="form-control text-center mx-2 quantity-input"
-                                            value="{{ $item->quantity }}" min="1"
-                                            max="{{ $item->product->stock_quantity }}" data-id="{{ $item->id }}"
-                                            style="width:60px;">
-
-                                        <button type="button" class="btn btn-sm btn-outline-secondary increase"
-                                            data-id="{{ $item->id }}">+</button>
-                                    </div>
-                                </td>
-
-                                <td>
-                                    ₹<span id="subtotal-{{ $item->id }}">{{ $subtotal }}</span>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-danger removeItem"
-                                        data-id="{{ $item->id }}">
-                                        Remove
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- MOBILE CARD -->
-                            <tr class="d-md-none border rounded mb-3">
-                                <td colspan="5" class="p-3">
-
-                                    <div class="fw-bold mb-2">
-                                        {{ $item->product->name }}
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Price:</span>
-                                        <span>₹{{ $price }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span>Quantity:</span>
-
-                                        <div class="d-flex align-items-center">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary decrease"
-                                                data-id="{{ $item->id }}">−</button>
-
-                                            <input type="number" class="form-control text-center mx-2 quantity-input"
-                                                value="{{ $item->quantity }}" min="1"
-                                                max="{{ $item->product->stock_quantity }}" data-id="{{ $item->id }}"
-                                                style="width:60px;">
-
-                                            <button type="button" class="btn btn-sm btn-outline-secondary increase"
-                                                data-id="{{ $item->id }}">+</button>
+                                        <!-- IMAGE -->
+                                        <div class="col-md-2 text-center">
+                                            <img src="{{ $img ? asset('storage/' . $img) : 'https://via.placeholder.com/120' }}"
+                                                class="cart-img">
                                         </div>
+
+                                        <!-- INFO -->
+                                        <div class="col-md-4">
+                                            <h6 class="fw-semibold mb-1">
+                                                {{ $item->product->name }}
+                                            </h6>
+
+                                            <div class="text-muted small">
+                                                ₹{{ number_format($price, 2) }}
+                                            </div>
+                                        </div>
+
+                                        <!-- QUANTITY -->
+                                        <div class="col-md-3">
+
+                                            <div class="d-flex align-items-center">
+
+                                                <button class="btn btn-outline-secondary decrease"
+                                                    data-id="{{ $item->id }}">−</button>
+
+                                                <input type="number" class="form-control text-center mx-2 qty-input"
+                                                    value="{{ $item->quantity }}" data-id="{{ $item->id }}"
+                                                    min="1" max="{{ $item->product->stock_quantity }}">
+
+                                                <button class="btn btn-outline-secondary increase"
+                                                    data-id="{{ $item->id }}">+</button>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- SUBTOTAL -->
+                                        <div class="col-md-2 fw-bold">
+                                            ₹<span id="subtotal-{{ $item->id }}">
+                                                {{ number_format($subtotal, 2) }}
+                                            </span>
+                                        </div>
+
+                                        <!-- REMOVE -->
+                                        <div class="col-md-1 text-end">
+                                            <button class="btn btn-sm btn-danger removeItem" data-id="{{ $item->id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
 
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <span>Subtotal:</span>
-                                        <span>
-                                            ₹<span id="subtotal-{{ $item->id }}">{{ $subtotal }}</span>
-                                        </span>
-                                    </div>
-
-                                    <button type="button" class="btn btn-sm btn-danger w-100 removeItem"
-                                        data-id="{{ $item->id }}">
-                                        Remove
-                                    </button>
-
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         @endforeach
 
-                    </tbody>
-                </table>
+                    </div>
 
-            </div>
 
-            <div class="text-end mt-3">
-                <h4>Total: ₹<span id="cartTotal">{{ $total }}</span></h4>
+                    <!-- ORDER SUMMARY -->
+                    <div class="col-lg-4">
 
-                <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#checkoutModal">
-                    Checkout
-                </button>
-            </div>
-        @else
-            <p>Your cart is empty.</p>
-        @endif
+                        <div class="card border-0 shadow-sm p-4 sticky-summary">
+
+                            <h5 class="fw-bold mb-3">Order Summary</h5>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Items Total</span>
+                                <strong>₹<span id="cartTotal">{{ number_format($total, 2) }}</span></strong>
+                            </div>
+
+                            <div class="text-muted small mb-3">
+                                Delivery within 3-5 business days
+                            </div>
+
+                            <button class="btn btn-success w-100 py-2" data-bs-toggle="modal"
+                                data-bs-target="#checkoutModal">
+                                Proceed to Checkout
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <i class="fa fa-cart-shopping fa-3x text-muted mb-3"></i>
+                    <h5>Your cart is empty</h5>
+                    <a href="{{ route('shop.index') }}" class="btn btn-primary mt-3">
+                        Continue Shopping
+                    </a>
+                </div>
+            @endif
+
+        </div>
     </div>
 
     <!-- Checkout Modal -->
@@ -135,7 +136,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
-                <form action="{{ route('checkout.store') }}" method="POST">
+                <form onsubmit="return false;">
                     @csrf
 
                     <div class="modal-header">
@@ -225,9 +226,9 @@
                             Cancel
                         </button>
 
-                        <button type="submit" class="btn btn-success">
-                            Place Order
-                        </button>
+                            <button type="button" id="rzp-button" class="btn btn-success w-20">
+                                Pay with Razorpay
+                            </button>
                     </div>
 
                 </form>
@@ -235,7 +236,34 @@
             </div>
         </div>
     </div>
+{{-- Razorpay Hidden Form --}}
+<form id="razorpay-form" action="{{ route('checkout.store') }}" method="POST">
+    @csrf
 
+    <input type="hidden" name="address_id" id="selected_address">
+
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+</form>
+    <style>
+        .cart-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .quantity-input {
+            width: 70px;
+        }
+
+        .sticky-summary {
+            position: sticky;
+            top: 90px;
+            border-radius: 12px;
+        }
+    </style>
 @endsection
 
 
@@ -342,4 +370,78 @@
 
         });
     </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById('rzp-button').addEventListener('click', function(e) {
+
+    e.preventDefault();
+
+    // ✅ get selected address
+    let address = document.querySelector('input[name="address_id"]:checked');
+
+    if (!address) {
+        alert('Please select delivery address');
+        return;
+    }
+
+    fetch("{{ route('checkout.razorpay') }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(res => res.json())
+    .then(order => {
+
+        console.log("Razorpay Order:", order);
+
+        if (!order.amount) {
+            alert('Payment initialization failed');
+            return;
+        }
+
+        var options = {
+            key: "{{ config('services.razorpay.key') }}",
+            amount: order.amount,
+            currency: order.currency,
+            name: "{{ config('app.name') }}",
+            order_id: order.id,
+
+            handler: function (response) {
+
+                // ✅ fill hidden form
+                document.getElementById('selected_address').value =
+                    address.value;
+
+                document.getElementById('razorpay_payment_id').value =
+                    response.razorpay_payment_id;
+
+                document.getElementById('razorpay_order_id').value =
+                    response.razorpay_order_id;
+
+                document.getElementById('razorpay_signature').value =
+                    response.razorpay_signature;
+
+                // ✅ submit ONLY razorpay form
+                document.getElementById('razorpay-form').submit();
+            },
+
+            theme: {
+                color: "#28a745"
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Unable to start payment");
+    });
+
+});
+</script>
 @endsection

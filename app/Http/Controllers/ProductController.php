@@ -16,9 +16,26 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->paginate(10);
+        $limit  = $request->input('limit', 10);
+        $search = $request->input('search');
+        $active = $request->input('active');
+
+        $products = Product::query()->latest();
+
+        if (!empty($search)) {
+            $products->search($search);
+        }
+
+        if ($active !== null) {
+            $products->where('status', $active);
+        }
+
+        $products = $products
+            ->paginate($limit)
+            ->withQueryString();
+
         return view('products.index', compact('products'));
     }
 
@@ -36,6 +53,7 @@ class ProductController extends Controller
             'stock_quantity' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'description' => 'nullable|string|max:2000',
+            'status' => 'required|boolean',
         ]);
 
         $this->productService->store($request->all());
@@ -68,6 +86,7 @@ class ProductController extends Controller
             'discount' => 'nullable|numeric',
             'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
             'description' => 'nullable|string|max:2000',
+            'status' => 'required|boolean',
         ]);
 
         $this->productService->update($product, $request->all());

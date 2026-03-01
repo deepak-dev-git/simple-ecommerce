@@ -30,16 +30,36 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
 
         $quantity = $request->quantity;
+
         if ($quantity > $product->stock_quantity) {
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Requested quantity exceeds stock.'
+                ], 422);
+            }
+
             return back()->with('error', 'Requested quantity exceeds stock.');
         }
+
         $cartItem = CartItem::where('user_id', auth()->id())
             ->where('product_id', $product->id)
             ->first();
 
         if ($cartItem) {
+
             $newQuantity = $cartItem->quantity + $quantity;
+
             if ($newQuantity > $product->stock_quantity) {
+
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stock not sufficient'
+                    ], 422);
+                }
+
                 return back()->with('error', 'Stock not sufficient');
             }
 
@@ -47,15 +67,24 @@ class CartController extends Controller
                 'quantity' => $newQuantity
             ]);
         } else {
-            CartItem::create([
+
+            $cartItem = CartItem::create([
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
                 'quantity' => $quantity
             ]);
         }
 
-        // return back()->with('success', 'Product added to cart!');
-        return redirect()->route('cart.index')
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'cart_id' => $cartItem->id,
+                'quantity' => $cartItem->quantity
+            ]);
+        }
+
+        return redirect()
+            ->route('cart.index')
             ->with('success', 'Product added to cart');
     }
 
